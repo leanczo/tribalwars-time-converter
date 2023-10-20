@@ -1,0 +1,17 @@
+.tooltip-style {
+  position: absolute;
+  max-width: 300px;
+  z-index: 30000 !important;
+  border: 1px solid #804000;
+  padding: 5px;
+  background: #f0e2be;
+  background: -moz-linear-gradient(top, #e3c485 0%, #ecd09a 100%);
+  background: -webkit-linear-gradient(top, #e3c485 0%,#ecd09a 100%);
+  background: -o-linear-gradient(top, #e3c485 0%,#ecd09a 100%);
+  background: -ms-linear-gradient(top, #e3c485 0%,#ecd09a 100%);
+  background: linear-gradient(to bottom, #e3c485 0%,#ecd09a 100%);
+  -webkit-box-shadow: 1px 1px 2px 0px rgba(60, 30, 0, 0.35);
+  box-shadow: 1px 1px 2px 0px rgba(60, 30, 0, 0.35);
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}

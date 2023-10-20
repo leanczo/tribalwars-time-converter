@@ -1,2 +1,2 @@
-# tribalwars-timezone-ce
+# Tribalwars time converter
 Project in progress...
