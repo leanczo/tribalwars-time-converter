@@ -16,11 +16,19 @@ function calculateServerOffset() {
 function convertServerTimeToLocal(timeStr) {
   if (serverOffset === null) calculateServerOffset();
 
-  const serverTime = luxon.DateTime.fromFormat(timeStr, "H:mm:ss", {
-    zone: "UTC",
-  });
-  const localTime = serverTime.plus({ hours: serverOffset }).toLocal();
+  // Elimina los milisegundos del string (si están presentes)
+  timeStr = timeStr.replace(/:\d{3}$/, "");
 
+  let serverTime;
+
+  try {
+    serverTime = luxon.DateTime.fromFormat(timeStr, "H:mm:ss", { zone: "UTC" });
+  } catch (e) {
+    console.error("No se pudo parsear la fecha", e);
+    return "Invalid Time";
+  }
+
+  const localTime = serverTime.plus({ hours: serverOffset }).toLocal();
   return localTime.toFormat("H:mm:ss");
 }
 
@@ -38,18 +46,24 @@ document.body.addEventListener("mouseover", function (event) {
     }
   }
 
-  // // Caso: Otros elementos de hora
-  // if (
-  //     target.tagName.toLowerCase() === "td" &&
-  //     target.innerText.includes("hoy a las")
-  // ) {
-  //     let timeStr = target.innerText.split("hoy a las ")[1].split(":<span")[0];
-  //     let localTime = convertServerTimeToLocal(timeStr);
-  //     showTooltip(target, localTime);
-  // }
+  // Caso: Otros elementos de hora
+  if (
+    target.tagName.toLowerCase() === "td" &&
+    target.innerText.includes("hoy a las")
+  ) {
+    let timeStr = target.innerText.match(/hoy a las (\d+:\d+:\d+:\d+)/)[1];
+
+    let localTime = convertServerTimeToLocal(timeStr);
+    showTooltip(target, localTime);
+  }
 });
 
+let currentTooltip = null;
+
 function showTooltip(element, text) {
+  // Si ya hay un tooltip mostrado, sal del método
+  if (currentTooltip) return;
+
   let tooltip = document.createElement("div");
   tooltip.innerText = text;
   tooltip.classList.add("tooltip-style");
@@ -59,7 +73,11 @@ function showTooltip(element, text) {
   tooltip.style.left = rect.left + window.scrollX + "px";
   tooltip.style.top = rect.bottom + window.scrollY - 40 + "px";
 
+  // Almacenar el tooltip en la variable currentTooltip
+  currentTooltip = tooltip;
+
   element.addEventListener("mouseleave", function () {
     tooltip.remove();
+    currentTooltip = null; // Resetear la variable cuando el tooltip es removido
   });
 }
